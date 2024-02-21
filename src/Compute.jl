@@ -1,5 +1,11 @@
 # ===== PRIVATE METHODS BELOW HERE =================================================================================== #
-# TODO: Put private helper methods here. Don't forget to use the _ naming convention, and to add basic documentation.
+
+
+
+
+
+
+
 # ===== PRIVATE METHODS ABOVE HERE =================================================================================== #
 
 # ===== PUBLIC METHODS BELOW HERE ==================================================================================== #
@@ -39,10 +45,29 @@ function decode_part_2(models::Dict{Int64, MyPuzzleRecordModel})::Tuple{Int64, D
     # initialize -
     total = 0;
     codes = Dict{Int64, Int64}();
-     
-    # TODO: Add the logic for part 2 here
-    # ...
-     
+    num_dict = Dict("zero"=> "0", "one" => "1", "two" => "2", "three" => "3", "four" => "4", "five" => "5", "six" => "6", "seven" => "7", "eight" => "8", "nine" => "9")
+
+    #decode part 2 logic
+    for (linenumber,model) in models
+        record_copy= model.record
+
+        for (word, num) in num_dict
+            if occursin(word, record_copy)
+                first_char=word[1] |> string
+                last_char= word[end] |> string 
+                replace_word= first_char*word*last_char
+                record_copy= replace(record_copy, word => replace_word)
+                record_copy= replace(record_copy, word => num)
+            end
+        end
+
+        number_string = filter(isdigit, record_copy)
+        line_sum = number_string[1]*number_string[end]
+        codes[linenumber] = parse(Int64, line_sum)
+        total += parse(Int64, line_sum)
+
+    end
+
      # return the total -
      return (total, codes);
 end
